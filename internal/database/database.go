@@ -21,7 +21,7 @@ func NewDB(cfg *config.Config) (*gorm.DB, error) {
 		return nil, err
 	}
 
-	err = db.AutoMigrate(&model.User{}, &model.Review{})
+	err = db.AutoMigrate(&model.Review{}, &model.Review{})
 	if err != nil {
 		return nil, err
 	}

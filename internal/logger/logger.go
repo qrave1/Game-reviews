@@ -1,19 +1,24 @@
 package logger
 
 import (
-	"log/slog"
-	"os"
+	"github.com/sirupsen/logrus"
 )
 
-func NewLogger(env string) *slog.Logger {
-	var log *slog.Logger
-	switch env {
-	case "local":
-		log = slog.New(slog.NewTextHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelDebug}))
-
-	case "prod":
-		log = slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelInfo}))
+func NewLogger(env string) *logrus.Logger {
+	log := logrus.Logger{
+		Formatter: &logrus.TextFormatter{
+			DisableTimestamp: false,
+			TimestampFormat:  "2006-01-02 15:04:05",
+			FullTimestamp:    false,
+		},
 	}
 
-	return log
+	switch env {
+	case "local":
+		log.SetLevel(logrus.DebugLevel)
+	case "prod":
+		log.SetLevel(logrus.InfoLevel)
+	}
+
+	return &log
 }

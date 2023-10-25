@@ -7,18 +7,18 @@ import (
 	"net/http"
 )
 
-type UserHandler struct {
-	userUC model.UserUsecase
+type ReviewHandler struct {
+	revUC model.ReviewUsecase
 }
 
-func NewUserHandler(userUC model.UserUsecase) *UserHandler {
-	return &UserHandler{userUC: userUC}
+func NewReviewHandler(revUC model.ReviewUsecase) *ReviewHandler {
+	return &ReviewHandler{revUC}
 }
 
-func (uh *UserHandler) GetUser(c *fiber.Ctx) error {
+func (rh *ReviewHandler) GetReview(c *fiber.Ctx) error {
 	id := c.QueryInt("id")
 
-	user, err := uh.userUC.Read(id)
+	review, err := rh.revUC.Read(id)
 	if err != nil {
 		return c.Status(http.StatusBadRequest).JSON(fiber.Map{
 			"status":  "error",
@@ -26,7 +26,7 @@ func (uh *UserHandler) GetUser(c *fiber.Ctx) error {
 		})
 	}
 
-	js, err := json.Marshal(&user)
+	js, err := json.Marshal(&review)
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
 			"status":  "error",
@@ -40,16 +40,16 @@ func (uh *UserHandler) GetUser(c *fiber.Ctx) error {
 	})
 }
 
-func (uh *UserHandler) PostUser(c *fiber.Ctx) error {
-	var user model.User
-	if err := c.BodyParser(&user); err != nil {
+func (rh *ReviewHandler) PostReview(c *fiber.Ctx) error {
+	var review model.Review
+	if err := c.BodyParser(&review); err != nil {
 		return c.Status(http.StatusBadRequest).JSON(fiber.Map{
 			"status":  "error",
 			"message": err.Error(),
 		})
 	}
 
-	err := uh.userUC.Add(user.Name, user.Email, user.Password)
+	err := rh.revUC.Add(review.Body, review.UserID)
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
 			"status":  "error",
@@ -62,11 +62,27 @@ func (uh *UserHandler) PostUser(c *fiber.Ctx) error {
 	})
 }
 
-func (uh *UserHandler) ChangePassword(c *fiber.Ctx) error {
+func (rh *ReviewHandler) UpdateReview(c *fiber.Ctx) error {
 	id := c.QueryInt("id")
-	newPass := c.Query("pass")
+	newBody := c.Query("body")
 
-	err := uh.userUC.UpdatePass(id, newPass)
+	err := rh.revUC.Update(id, newBody)
+	if err != nil {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{
+			"status":  "error",
+			"message": err.Error(),
+		})
+	}
+
+	return c.JSON(fiber.Map{
+		"status": "OK",
+	})
+}
+
+func (rh *ReviewHandler) DeleteReview(c *fiber.Ctx) error {
+	id := c.QueryInt("id")
+
+	err := rh.revUC.Delete(id)
 	if err != nil {
 		return c.Status(http.StatusBadRequest).JSON(fiber.Map{
 			"status":  "error",

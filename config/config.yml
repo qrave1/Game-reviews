@@ -1,8 +1,9 @@
 env: "local"  #local, prod
 app:
-  address: "localhost:8080" # change to 0.0.0.0:8080 to prod environment
+  address: "0.0.0.0:8080" # change to 0.0.0.0:8080 to prod environment
 db:
   user: "user"
   pass: "password"
   host: "localhost:3306"   # change to mysql to prod environment
   name: "GameReview"
+secret: "mirea"   # secret key for jwt auth

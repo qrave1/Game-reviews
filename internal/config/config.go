@@ -8,9 +8,10 @@ import (
 )
 
 type Config struct {
-	Env string `yaml:"env"`
-	App `yaml:"app"`
-	DB  `yaml:"db"`
+	Env    string `yaml:"env"`
+	App    `yaml:"app"`
+	DB     `yaml:"db"`
+	Secret []byte `yaml:"secret"`
 }
 
 type App struct {

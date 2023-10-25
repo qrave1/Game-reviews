@@ -17,11 +17,17 @@ func main() {
 	if err != nil {
 		log.Error(err.Error())
 	}
+
 	ur := repository.NewUserRepo(db)
 	uc := usecase.NewUserUsecase(ur)
 	uh := handler.NewUserHandler(uc)
 
 	app := http.NewRouter(uh)
 
-	log.Error(app.Listen(cfg.Address).Error())
+	log.Error(app.Listen(cfg.Address))
+
+	// todo сделать логгировани
+	// todo написать unit тесты для всего
+	// todo сделать фронт
+	// todo сделать auth и middleware
 }
