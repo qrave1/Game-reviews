@@ -12,18 +12,6 @@ services:
       - 'MYSQL_ROOT_PASSWORD=${DB_PASSWORD}'
     volumes:
       - 'database_mysql:/var/lib/mysql'
-  phpmyadmin:
-    container_name: mysql_admin
-    image: phpmyadmin/phpmyadmin
-    depends_on:
-      - mysql
-    environment:
-      - PMA_HOST=mysql
-      - 'PMA_USER=${DB_USER}'
-      - 'PMA_PORT=${DB_PORT}'
-      - 'PMA_PASSWORD=${DB_PASSWORD}'
-    ports:
-      - '9090:80'
 
 volumes:
-  database_mysql: null
+  database_mysql:

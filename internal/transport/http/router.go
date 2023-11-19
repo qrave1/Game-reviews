@@ -7,7 +7,7 @@ import (
 	"github.com/gofiber/fiber/v2/middleware/recover"
 )
 
-func NewRouter(uh *handler.UserHandler) *fiber.App {
+func NewRouter(uh *handler.UserHandler, rh *handler.ReviewHandler) *fiber.App {
 	app := fiber.New()
 	app.Use(recover.New())
 
@@ -16,6 +16,11 @@ func NewRouter(uh *handler.UserHandler) *fiber.App {
 	users := app.Group("/users")
 	{
 		users.Get("/", uh.GetUser)
+	}
+
+	reviews := app.Group("/reviews")
+	{
+		reviews.Get("/", rh.GetAllReviews)
 	}
 
 	return app

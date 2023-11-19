@@ -35,8 +35,31 @@ func (rh *ReviewHandler) GetReview(c *fiber.Ctx) error {
 	}
 
 	return c.JSON(fiber.Map{
-		"status": "OK",
-		"data":   js,
+		"status":  "OK",
+		"message": js,
+	})
+}
+
+func (rh *ReviewHandler) GetAllReviews(c *fiber.Ctx) error {
+	reviews, err := rh.revUC.ReadAll()
+	if err != nil {
+		return c.Status(http.StatusBadRequest).JSON(fiber.Map{
+			"status":  "error",
+			"message": err.Error(),
+		})
+	}
+
+	js, err := json.Marshal(&reviews)
+	if err != nil {
+		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
+			"status":  "error",
+			"message": err.Error(),
+		})
+	}
+
+	return c.JSON(fiber.Map{
+		"status":  "OK",
+		"message": js,
 	})
 }
 
@@ -49,7 +72,7 @@ func (rh *ReviewHandler) PostReview(c *fiber.Ctx) error {
 		})
 	}
 
-	err := rh.revUC.Add(review.Body, review.UserID)
+	err := rh.revUC.Add(review.Body, review.Score, review.UserID)
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{
 			"status":  "error",

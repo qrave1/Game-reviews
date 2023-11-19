@@ -22,11 +22,14 @@ func main() {
 	uc := usecase.NewUserUsecase(ur)
 	uh := handler.NewUserHandler(uc)
 
-	app := http.NewRouter(uh)
+	rr := repository.NewReviewRepo(db)
+	rc := usecase.NewReviewUsecase(rr)
+	rh := handler.NewReviewHandler(rc)
+
+	app := http.NewRouter(uh, rh)
 
 	log.Error(app.Listen(cfg.Address))
 
-	// todo сделать логгировани
 	// todo написать unit тесты для всего
 	// todo сделать фронт
 	// todo сделать auth и middleware
