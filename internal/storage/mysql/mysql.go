@@ -1,9 +1,9 @@
-package database
+package mysql
 
 import (
 	"fmt"
 	"gameReview/internal/config"
-	"gameReview/internal/model"
+	"gameReview/internal/domain"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -21,7 +21,7 @@ func NewDB(cfg *config.Config) (*gorm.DB, error) {
 		return nil, err
 	}
 
-	err = db.AutoMigrate(&model.Review{}, &model.Review{})
+	err = db.AutoMigrate(&domain.User{}, &domain.Review{})
 	if err != nil {
 		return nil, err
 	}

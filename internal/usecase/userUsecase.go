@@ -1,12 +1,12 @@
 package usecase
 
-import "gameReview/internal/model"
+import "gameReview/internal/domain"
 
 type UserUsecase struct {
-	userRepo model.UserRepo
+	userRepo domain.UserRepo
 }
 
-func NewUserUsecase(userRepo model.UserRepo) *UserUsecase {
+func NewUserUsecase(userRepo domain.UserRepo) *UserUsecase {
 	return &UserUsecase{userRepo: userRepo}
 }
 
@@ -14,12 +14,16 @@ func (uu *UserUsecase) Add(name, email, password string) error {
 	return uu.userRepo.Create(name, email, password)
 }
 
-func (uu *UserUsecase) Read(id int) (model.User, error) {
+func (uu *UserUsecase) Read(id int) (domain.User, error) {
 	return uu.userRepo.Read(id)
 }
 
-func (uu *UserUsecase) UpdatePass(id int, password string) error {
-	return uu.userRepo.UpdatePass(id, password)
+func (uu *UserUsecase) ReadByEmail(email string) (domain.User, error) {
+	return uu.userRepo.ReadByEmail(email)
+}
+
+func (uu *UserUsecase) Update(user domain.User) error {
+	return uu.userRepo.Update(user)
 }
 
 func (uu *UserUsecase) Delete(id int) error {

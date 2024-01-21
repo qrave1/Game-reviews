@@ -1,23 +1,25 @@
-package model
+package domain
 
 type User struct {
-	ID       int      `json:"ID"`
+	ID       int      `json:"ID,omitempty"`
 	Name     string   `json:"name"`
 	Email    string   `json:"email"`
-	Password string   `json:"password"`
-	Reviews  []Review `json:"reviews"`
+	Password string   `json:"password,omitempty"`
+	Reviews  []Review `json:"reviews,omitempty"`
 }
 
 type UserRepo interface {
 	Create(name, email, password string) error
 	Read(id int) (User, error)
-	UpdatePass(id int, password string) error
+	ReadByEmail(email string) (User, error)
+	Update(user User) error
 	Delete(id int) error
 }
 
 type UserUsecase interface {
 	Add(name, email, password string) error
 	Read(id int) (User, error)
-	UpdatePass(id int, password string) error
+	ReadByEmail(email string) (User, error)
+	Update(user User) error
 	Delete(id int) error
 }

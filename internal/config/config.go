@@ -1,42 +1,47 @@
 package config
 
-import (
-	"log"
-	"os"
-
-	"github.com/ilyakaznacheev/cleanenv"
-)
+import "time"
 
 type Config struct {
-	Env    string `yaml:"env"`
-	App    `yaml:"app"`
-	DB     `yaml:"db"`
-	Secret []byte `yaml:"secret"`
+	Env string
+	App
+	DB
+	Secret string
+	Redis
 }
 
 type App struct {
-	Address string `yaml:"address"`
+	Address string
+}
+
+type Redis struct {
+	Host     string
+	TokenTTL time.Duration
 }
 
 type DB struct {
-	DbUser string `yaml:"user"`
-	DbPass string `yaml:"pass"`
-	DbHost string `yaml:"host"`
-	DbName string `yaml:"name"`
+	DbUser string
+	DbPass string
+	DbHost string
+	DbName string
 }
 
-func MustLoad() *Config {
-	path := "./config/config.yml"
-
-	if _, err := os.Stat(path); os.IsNotExist(err) {
-		log.Fatalf("config file doesn't exist: %s", path)
+func NewDefault() *Config {
+	return &Config{
+		Env: "PROD",
+		App: App{
+			Address: ":8080",
+		},
+		DB: DB{
+			DbUser: "user",
+			DbPass: "pass",
+			DbHost: "localhost:7000",
+			DbName: "gameReview",
+		},
+		Secret: "very-secret-key",
+		Redis: Redis{
+			Host:     "localhost:6379",
+			TokenTTL: 24 * time.Hour,
+		},
 	}
-
-	var cfg Config
-
-	if err := cleanenv.ReadConfig(path, &cfg); err != nil {
-		log.Fatalf("can't read config: %s", err)
-	}
-
-	return &cfg
 }

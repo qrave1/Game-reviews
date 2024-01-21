@@ -1,7 +1,7 @@
 package repository
 
 import (
-	"gameReview/internal/model"
+	"gameReview/internal/domain"
 	"gorm.io/gorm"
 )
 
@@ -14,7 +14,7 @@ func NewUserRepo(db *gorm.DB) *UserRepo {
 }
 
 func (ur *UserRepo) Create(name, email, password string) error {
-	u := model.User{
+	u := domain.User{
 		Name:     name,
 		Email:    email,
 		Password: password,
@@ -22,16 +22,20 @@ func (ur *UserRepo) Create(name, email, password string) error {
 	return ur.db.Create(&u).Error
 }
 
-func (ur *UserRepo) Read(id int) (model.User, error) {
-	var u model.User
+func (ur *UserRepo) Read(id int) (domain.User, error) {
+	var u domain.User
 	return u, ur.db.First(&u, "id = ?", id).Error
 }
 
-func (ur *UserRepo) UpdatePass(id int, password string) error {
-	return ur.db.Model(&model.User{}).Where("id = ?", id).Update("password", password).Error
+func (ur *UserRepo) ReadByEmail(email string) (domain.User, error) {
+	var u domain.User
+	return u, ur.db.First(&u, "email = ?", email).Error
+}
 
+func (ur *UserRepo) Update(user domain.User) error {
+	return ur.db.Model(domain.User{}).Where("id = ?", user.ID).Updates(user).Error
 }
 
 func (ur *UserRepo) Delete(id int) error {
-	return ur.db.Delete(&model.User{}, id).Error
+	return ur.db.Delete(&domain.User{}, id).Error
 }

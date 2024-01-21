@@ -8,11 +8,11 @@ COPY go.mod go.sum ./
 
 RUN go mod download
 
-COPY . .
+COPY backend .
 
 RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main ./cmd/app
 
-FROM alpine:latest
+FROM alpine:3.19
 
 COPY --from=builder /app/main .
 COPY --from=builder /app/.env .

@@ -1,3 +1,3 @@
-.git
 .idea
-#.env
+.env
+cmd/wire/wire_gen.go

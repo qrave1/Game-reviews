@@ -1,12 +1,12 @@
 package usecase
 
-import "gameReview/internal/model"
+import "gameReview/internal/domain"
 
 type ReviewUsecase struct {
-	reviewRepo model.ReviewRepo
+	reviewRepo domain.ReviewRepo
 }
 
-func NewReviewUsecase(reviewRepo model.ReviewRepo) *ReviewUsecase {
+func NewReviewUsecase(reviewRepo domain.ReviewRepo) *ReviewUsecase {
 	return &ReviewUsecase{reviewRepo: reviewRepo}
 }
 
@@ -14,8 +14,16 @@ func (ru *ReviewUsecase) Add(body string, uId int) error {
 	return ru.reviewRepo.Create(body, uId)
 }
 
-func (ru *ReviewUsecase) Read(id int) (model.Review, error) {
+func (ru *ReviewUsecase) Read(id int) (domain.Review, error) {
 	return ru.reviewRepo.Read(id)
+}
+
+func (ru *ReviewUsecase) ReadAll() ([]domain.Review, error) {
+	return ru.reviewRepo.ReadAll()
+}
+
+func (ru *ReviewUsecase) ReadLastThree() ([]domain.Review, error) {
+	return ru.reviewRepo.ReadLastThree()
 }
 
 func (ru *ReviewUsecase) Update(id int, body string) error {

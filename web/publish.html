@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Game Reviews</title>
+</head>
+<body>
+<style>
+    form {
+        width: 500px;
+        margin: 0 auto;
+        padding: 40px;
+        background-color: #f9f9f9;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+    label {
+        display: block;
+        margin-bottom: 10px;
+        font-weight: bold;
+    }
+
+    input[type="text"],
+    select,
+    textarea {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        resize: none;
+    }
+
+    input[type="submit"] {
+        padding: 10px 20px;
+        background-color: #007BFF;
+        color: #fff;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+    }
+
+    input[type="submit"]:hover {
+        background-color: #0056b3;
+    }
+
+    @media only screen and (max-width: 600px) {
+        form {
+            width: 100%;
+            padding: 10px;
+        }
+    }
+</style>
+
+<form id="gameForm">
+<!--    <label for="gameImage">Обложка:</label>-->
+<!--    <input id="gameImage" type="file" name="gameImage" accept="image/png, image/jpeg" />-->
+    <label for="gameTitle">Название:</label>
+    <input type="text" id="gameTitle" name="gameTitle">
+    <label for="gameGenre">Жанр:</label>
+    <select id="gameGenre" name="gameGenre">
+        <option value="shooter">Шутер</option>
+        <option value="strategy">Стратегия</option>
+        <option value="rpg">Рпг</option>
+    </select>
+    <label for="review">Комментарий:</label>
+    <textarea id="review" name="review"></textarea>
+    <input type="submit" value="Опубликовать">
+</form>
+
+<script>
+    document.getElementById('gameForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+
+        const formData = new FormData(this);
+
+        fetch('https://heron-apt-sunfish.ngrok-free.app/reviews', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => console.log(data))
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+    });
+</script>
+
+</body>
+</html>
