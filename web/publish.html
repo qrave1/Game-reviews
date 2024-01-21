@@ -1,7 +1,8 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
-    <title>Game Reviews</title>
+    <meta charset="UTF-8">
+    <title>GameReviews</title>
 </head>
 <body>
 <style>
@@ -53,8 +54,6 @@
 </style>
 
 <form id="gameForm">
-<!--    <label for="gameImage">Обложка:</label>-->
-<!--    <input id="gameImage" type="file" name="gameImage" accept="image/png, image/jpeg" />-->
     <label for="gameTitle">Название:</label>
     <input type="text" id="gameTitle" name="gameTitle">
     <label for="gameGenre">Жанр:</label>
@@ -73,13 +72,23 @@
         event.preventDefault();
 
         const formData = new FormData(this);
+        const object = {};
+        formData.forEach((value, key) => object[key] = value);
+        const request = JSON.stringify(object);
 
         fetch('https://heron-apt-sunfish.ngrok-free.app/reviews', {
             method: 'POST',
-            body: formData
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: request
         })
-            .then(response => response.json())
-            .then(data => console.log(data))
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
             .catch((error) => {
                 console.error('Error:', error);
             });

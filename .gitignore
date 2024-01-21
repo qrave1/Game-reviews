@@ -1,3 +1,3 @@
 .idea
 .env
-cmd/wire/wire_gen.go
+backend/cmd/wire/wire_gen.go
