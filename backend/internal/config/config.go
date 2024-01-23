@@ -35,12 +35,12 @@ func NewDefault() *Config {
 		DB: DB{
 			DbUser: "user",
 			DbPass: "pass",
-			DbHost: "mysql",
+			DbHost: "localhost:3306",
 			DbName: "gameReview",
 		},
 		Secret: "very-secret-key",
 		Redis: Redis{
-			Host:     "redis",
+			Host:     "localhost:6379",
 			TokenTTL: 24 * time.Hour,
 		},
 	}

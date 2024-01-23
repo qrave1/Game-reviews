@@ -37,19 +37,17 @@ func (rh *ReviewHandler) GetReview(c *fiber.Ctx) error {
 }
 
 func (rh *ReviewHandler) PostReview(c *fiber.Ctx) error {
-	review := struct {
-		Body   string `json:"body"`
-		UserID int    `json:"userID"`
+	r := struct {
+		Title string `json:"title"`
+		Body  string `json:"body"`
 	}{}
-	if err := c.BodyParser(&review); err != nil {
+	if err := c.BodyParser(&r); err != nil {
 		return response.Err(c, 400, err.Error())
 	}
 
-	if !authUtils.CheckToken(c, review.UserID) {
-		return response.Unauthorized(c)
-	}
+	uid := authUtils.GetUID(c)
 
-	err := rh.revUC.Add(review.Body, review.UserID)
+	err := rh.revUC.Add(r.Title, r.Body, uid)
 	if err != nil {
 		return response.Err(c, 500, err.Error())
 	}

@@ -3,58 +3,79 @@
 <head>
     <meta charset="UTF-8">
     <title>GameReviews</title>
-    <style>
-        .container {
-            display: flex;
-            justify-content: space-between;
-            flex-wrap: wrap;
-        }
-        .card {
-            border: 1px solid #000;
-            padding: 20px;
-            width: 18%;
-            box-sizing: border-box;
-        }
-        .auth-buttons {
-            display: flex;
-            justify-content: flex-end;
-            margin-bottom: 20px;
-        }
-        .auth-buttons a {
-            margin-left: 10px;
-            padding: 10px 20px;
-            background-color: #000;
-            color: #fff;
-            text-decoration: none;
-        }
-    </style>
+    <link rel="icon" type="image/png" href="./favicon/fav.png">
+    <link rel="stylesheet" href="./styles/style.css">
 </head>
 <body>
 <div class="auth-buttons">
-    <a href="/login">Login</a>
-    <a href="/signup">Signup</a>
+    <a href="publish.html" class="publish-review">Опубликовать обзор</a>
+    <a href="login.html">Войти</a>
+    <a href="register.html">Зарегистрироваться</a>
 </div>
-<div class="container">
-    <div class="card">
-        <h2></h2>
-        <p></p>
+<div class="container" id="container"></div>
+
+<footer>
+    <div class="footer-content">
+        <p>© 2024 GameReviews. Все права защищены.</p>
     </div>
-    <div class="card">
-        <h2></h2>
-        <p>Обзор игры 2...</p>
-    </div>
-    <div class="card">
-        <h2>Название игры 3</h2>
-        <p>Обзор игры 3...</p>
-    </div>
-    <div class="card">
-        <h2>Название игры 4</h2>
-        <p>Обзор игры 4...</p>
-    </div>
-    <div class="card">
-        <h2>Название игры 5</h2>
-        <p>Обзор игры 5...</p>
-    </div>
-</div>
+</footer>
 </body>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        getLastThree()
+    });
+
+    function getLastThree() {
+        fetch('https://heron-apt-sunfish.ngrok-free.app/last', {
+            method: 'GET',
+            headers: {
+                'ngrok-skip-browser-warning': '69420',
+                'Content-Type': 'application/json'
+            }
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(response => {
+                const dataContainer = document.getElementById("container");
+
+                if (dataContainer) {
+                    dataContainer.innerHTML = '';
+
+                    if (response.data.length === 0) {
+                        let card = createCard("Неизданный обзор", "Здесь могла бы быть ваша реклама...");
+                        dataContainer.appendChild(card);
+                    } else {
+                        response.data.forEach(item => {
+                            let card = createCard(item.title, item.body);
+                            dataContainer.appendChild(card);
+                        });
+                    }
+                }
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+    }
+
+    function createCard(t, b) {
+        const card = document.createElement('div');
+        card.className = 'card';
+
+        const title = document.createElement('h2');
+        title.textContent = t;
+
+        const overview = document.createElement('p');
+        overview.textContent = b;
+
+        card.appendChild(title);
+        card.appendChild(overview);
+
+        return card
+    }
+</script>
 </html>

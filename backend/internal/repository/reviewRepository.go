@@ -3,6 +3,7 @@ package repository
 import (
 	"gameReview/internal/domain"
 	"gorm.io/gorm"
+	"time"
 )
 
 type ReviewRepo struct {
@@ -13,10 +14,12 @@ func NewReviewRepo(db *gorm.DB) *ReviewRepo {
 	return &ReviewRepo{db: db}
 }
 
-func (rr *ReviewRepo) Create(body string, uId int) error {
+func (rr *ReviewRepo) Create(title, body string, uId int) error {
 	r := domain.Review{
-		Body:   body,
-		UserID: uId,
+		Title:     title,
+		Body:      body,
+		UserID:    uId,
+		CreatedAt: time.Now(),
 	}
 
 	return rr.db.Create(&r).Error

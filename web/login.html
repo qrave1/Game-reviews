@@ -3,60 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <title>GameReviews</title>
+    <link rel="icon" type="image/png" href="./favicon/fav.png">
+    <link rel="stylesheet" href="./styles/style.css">
 </head>
 
 <body>
-<style>
-    h2 {
-        text-align: center;
-    }
 
-    form {
-        width: 500px;
-        margin: 0 auto;
-        padding: 40px;
-        background-color: #f9f9f9;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-    }
-
-    label {
-        display: block;
-        margin-bottom: 10px;
-        font-weight: bold;
-    }
-
-    input,
-    select,
-    textarea {
-        width: 100%;
-        padding: 10px;
-        margin-bottom: 20px;
-        border: 1px solid #ccc;
-        border-radius: 3px;
-        resize: none;
-    }
-
-    input[type="submit"] {
-        padding: 10px 20px;
-        background-color: #007BFF;
-        color: #fff;
-        border: none;
-        border-radius: 3px;
-        cursor: pointer;
-    }
-
-    input[type="submit"]:hover {
-        background-color: #0056b3;
-    }
-
-    @media only screen and (max-width: 600px) {
-        form {
-            width: 100%;
-            padding: 10px;
-        }
-    }
-</style>
+<div class="auth-buttons">
+    <a href="index.html" class="publish-review">Главная</a>
+</div>
 
 <h2>Авторизация</h2>
 <form action="/login" method="post">
@@ -90,24 +45,18 @@
                 body: JSON.stringify(reqData)
             })
                 .then(response => {
-                    if (!response.ok) {
-                        throw new Error('Network response was not ok');
+                    return response.json()
+                })
+                .then(resp => {
+                    if (resp.message !== undefined) {
+                        throw new Error(resp.message)
                     }
-                    return response.json();
+
+                    localStorage.setItem("token", resp.data)
+                    window.location.href = 'http://localhost/index.html';
                 })
-                .then(data => {
-                    localStorage.setItem("token", data.data)
-                })
-                .then(
-                    fetch('https://heron-apt-sunfish.ngrok-free.app/', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(reqData)
-                }))
                 .catch((error) => {
-                    console.error('Error:', error);
+                    alert(error.message)
                 });
         });
     });

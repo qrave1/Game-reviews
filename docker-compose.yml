@@ -1,12 +1,13 @@
-version: '3'
+version: '3.8'
 services:
   app:
-    container_name: app
+    container_name: gameReview_app
     build:
       context: .
       dockerfile: Dockerfile
     ports:
       - "8080:8080"
+#    restart: unless-stopped
     depends_on:
       - mysql
       - redis
@@ -14,6 +15,7 @@ services:
       - gameReview
 
   nginx:
+    container_name: gameReview_nginx
     image: nginx:1.24
     ports:
       - "80:80"
@@ -21,12 +23,13 @@ services:
       - ./nginx/default.conf:/etc/nginx/conf.d/default.conf
       - ./web:/var/www/html
     depends_on:
-      - app
+      app:
+        condition: service_started
     networks:
       - gameReview
 
   mysql:
-    container_name: mysql_db
+    container_name: gameReview_db
     image: 'mysql:8'
     ports:
       - '3306:3306'
@@ -41,6 +44,7 @@ services:
       - gameReview
 
   redis:
+    container_name: gameReview_redis
     image: redis:7
     ports:
       - '6379:6379'

@@ -43,8 +43,11 @@ func (au AuthUsecase) Login(ctx context.Context, email, pass string) (string, er
 		return "", fmt.Errorf("user not found: %w", err)
 	}
 
-	if _, err = password.Verify(userDTO.Password, pass); err != nil {
-		return "", fmt.Errorf("wrong passwords: %s", pass)
+	if flag, err := password.Verify(userDTO.Password, pass); flag != true {
+		if err != nil {
+			au.log.Error(err)
+		}
+		return "", fmt.Errorf("wrong credentials")
 	}
 
 	token, err := au.tr.Token(ctx, email)

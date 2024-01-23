@@ -10,8 +10,8 @@ func NewReviewUsecase(reviewRepo domain.ReviewRepo) *ReviewUsecase {
 	return &ReviewUsecase{reviewRepo: reviewRepo}
 }
 
-func (ru *ReviewUsecase) Add(body string, uId int) error {
-	return ru.reviewRepo.Create(body, uId)
+func (ru *ReviewUsecase) Add(title, body string, uId int) error {
+	return ru.reviewRepo.Create(title, body, uId)
 }
 
 func (ru *ReviewUsecase) Read(id int) (domain.Review, error) {

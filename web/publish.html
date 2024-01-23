@@ -3,94 +3,64 @@
 <head>
     <meta charset="UTF-8">
     <title>GameReviews</title>
+    <link rel="icon" type="image/png" href="./favicon/fav.png">
+    <link rel="stylesheet" href="./styles/style.css">
 </head>
 <body>
-<style>
-    form {
-        width: 500px;
-        margin: 0 auto;
-        padding: 40px;
-        background-color: #f9f9f9;
-        border: 1px solid #ccc;
-        border-radius: 5px;
-    }
 
-    label {
-        display: block;
-        margin-bottom: 10px;
-        font-weight: bold;
-    }
-
-    input[type="text"],
-    select,
-    textarea {
-        width: 100%;
-        padding: 10px;
-        margin-bottom: 20px;
-        border: 1px solid #ccc;
-        border-radius: 3px;
-        resize: none;
-    }
-
-    input[type="submit"] {
-        padding: 10px 20px;
-        background-color: #007BFF;
-        color: #fff;
-        border: none;
-        border-radius: 3px;
-        cursor: pointer;
-    }
-
-    input[type="submit"]:hover {
-        background-color: #0056b3;
-    }
-
-    @media only screen and (max-width: 600px) {
-        form {
-            width: 100%;
-            padding: 10px;
+<script>
+    window.addEventListener('load', function () {
+        if (!localStorage.getItem('token')) {
+            window.location.href = 'index.html';
+            alert("Вы должны быть авторизованы!")
         }
-    }
-</style>
+    });
+</script>
+
+<div class="auth-buttons">
+    <a href="index.html" class="publish-review">Главная</a>
+</div>
 
 <form id="gameForm">
     <label for="gameTitle">Название:</label>
     <input type="text" id="gameTitle" name="gameTitle">
-    <label for="gameGenre">Жанр:</label>
-    <select id="gameGenre" name="gameGenre">
-        <option value="shooter">Шутер</option>
-        <option value="strategy">Стратегия</option>
-        <option value="rpg">Рпг</option>
-    </select>
     <label for="review">Комментарий:</label>
     <textarea id="review" name="review"></textarea>
     <input type="submit" value="Опубликовать">
 </form>
 
 <script>
-    document.getElementById('gameForm').addEventListener('submit', function(event) {
+    document.getElementById('gameForm').addEventListener('submit', function (event) {
         event.preventDefault();
 
-        const formData = new FormData(this);
-        const object = {};
-        formData.forEach((value, key) => object[key] = value);
-        const request = JSON.stringify(object);
+        const title = document.getElementById('gameTitle').value;
+        const body = document.getElementById('review').value;
+
+        const reqData = {
+            title: title,
+            body: body
+        };
+
+        console.log(reqData)
 
         fetch('https://heron-apt-sunfish.ngrok-free.app/reviews', {
             method: 'POST',
             headers: {
+                'token': localStorage.getItem('token'),
                 'Content-Type': 'application/json'
             },
-            body: request
+            body: JSON.stringify(reqData)
         })
             .then(response => {
-                if (!response.ok) {
-                    throw new Error('Network response was not ok');
+                let resp = response.json()
+                if (resp.message !== undefined) {
+                    throw new Error(resp.message)
                 }
-                return response.json();
+                alert("Ваш обзор опубликован!")
+                window.location.href = 'http://localhost/index.html';
             })
             .catch((error) => {
-                console.error('Error:', error);
+                alert(error.message)
             });
     });
 </script>
